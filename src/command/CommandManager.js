@@ -1,38 +1,43 @@
 import fs from "fs";
-const commandFiles = fs.readdirSync("./src/command/commands/").filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync("./src/command/commands/").filter(item => item.endsWith(".js"));
+const guildAllowedCommands = new Map();
+const prefix = "!";
 
-export default class CommandManager {
-    constructor(channel) {
-        this.channel = channel;
-        this.commandMap = new Map();
+export const handleMsg = (msg) => {
+    if (msg.author.bot || !msg.content.startsWith(prefix)) {
+        return;
     }
-
-    handleCommand = (cmd, author, args) => {
-        if (this.commandMap.has(cmd)) {
-            this.commandMap.get(cmd).execute(author, this.channel, args);
-        } else {
-            console.log(`Invalid Command ${cmd}`); //Throw err in future.
-        }
+    const guildID = msg.channel.guild.id;
+    const [cmd, ...args] = msg.content.slice(prefix.length).split(" ").map(item => item.toLowerCase());
+    if (guildAllowedCommands.get(guildID).find(item => item === cmd)) {
+        loadCommand(cmd).then(cmdFile => {
+            cmdFile.execute(msg.author, msg.channel, args);
+        })
     }
+}
 
-    loadCommands = async (...commands) => {
-        for (const command of commands) {
-            if (commandFiles.find(element => element === `${command}.js`)) {
-                const cmdFile = await import(`./commands/${command}.js`);
-                this.commandMap.set(cmdFile.name.toLowerCase(), cmdFile);
-            } else {
-                console.log(`${command}.js not found.`); //Throw err in future.
+export const registerGuild = (guildID) => {
+    guildAllowedCommands.set(guildID, []);
+    enableCommands(guildID, "queststart", "quest");
+}
+
+export const enableCommands = (guildID, ...commands) => {
+    for (const command of commands) {
+        guildAllowedCommands.get(guildID).push(command);
+    }
+}
+
+export const disableCommands = (guildID, ...commands) => {
+    let commandList = guildAllowedCommands.get(guildID);
+    for (const command of commands) {
+        for (let i = 0; i < commandList.length; i++) {
+            if (commandList[i] === command) {
+                commandList.splice(i, 1);
             }
         }
     }
+}
 
-    removeCommands = async (...commands) => {
-        for (const command of commands) {
-            if (this.commandMap.has(command)) {
-                this.commandMap.delete(command);
-            } else {
-                console.log(`CommandMap does not contain ${command}. Review.`);
-            }
-        }
-    }
+const loadCommand = cmd => {
+    return import(`./commands/${cmd}.js`);
 }
