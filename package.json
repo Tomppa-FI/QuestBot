@@ -1,0 +1,31 @@
+{
+  "name": "QuestBot",
+  "version": "1.0.0",
+  "description": "This will be a RPG-styled interactive Chatbot for use in Discord.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node -- src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tomppa-FI/QuestBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tomppa-FI/QuestBot/issues"
+  },
+  "homepage": "https://github.com/Tomppa-FI/QuestBot#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.8.4"
+  },
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "mongoose": "^5.8.11"
+  }
+}
