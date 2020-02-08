@@ -25,4 +25,14 @@ export default class CommandManager {
             }
         }
     }
+
+    removeCommands = async (...commands) => {
+        for (const command of commands) {
+            if (this.commandMap.has(command)) {
+                this.commandMap.delete(command);
+            } else {
+                console.log(`CommandMap does not contain ${command}. Review.`);
+            }
+        }
+    }
 }
