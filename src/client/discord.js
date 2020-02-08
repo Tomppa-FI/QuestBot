@@ -13,4 +13,8 @@ export const getConnection = () => {
     return client.login(TOKEN).then(() => {
         return client;
     })
+
+    client.on("message", msg => {
+        msg.au
+    })
 }

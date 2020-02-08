@@ -20,7 +20,12 @@ export default class QuestComponent {
     }
 
     printPlayers = () => {
-
+        const players = this.questData.getPlayers();
+        let msg = "";
+        for (const player of players.values()) {
+            msg += `${player.username}, Level ${player.level} (${player.job})`;
+        }
+        this.sendMessage(msg);
     }
 
     execute = async () => {
